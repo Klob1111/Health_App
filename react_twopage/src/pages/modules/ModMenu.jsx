@@ -7,9 +7,9 @@ const ModMenu = ({ modules, enterModule, currentmodview }) => {
   return (
     <div
       style={{ height: "100%" }}
-      className='container-fluid d-flex flex-column justify-content-center p-0'
+      className="container-fluid d-flex flex-column justify-content-center p-0"
     >
-      <div className='position-relative container bg-dark-subtle w-25 rounded-5 h-75 p-3 overflow-scroll'>
+      <div className="position-relative container bg-dark-subtle w-25 rounded-5 h-75 p-3 overflow-y-scroll">
         {/* modules */}
         {Object.keys(modules).map((name, index) => {
           let displaytext = name;
@@ -55,9 +55,9 @@ const ModuleDisplay = ({ name, text, color, boiler, onClick }) => {
 
       {/* connecting bar */}
       {name != "Number" && (
-        <div className='position-relative z-0' style={{ height: 0 }}>
+        <div className="position-relative z-0" style={{ height: 0 }}>
           <div
-            className='bg-light position-relative start-50 translate-middle-x'
+            className="bg-light position-relative start-50 translate-middle-x"
             style={{ height: "30px", width: "5px", top: "-105px" }}
           ></div>
         </div>

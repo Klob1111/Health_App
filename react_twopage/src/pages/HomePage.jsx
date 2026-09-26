@@ -1,5 +1,7 @@
 import { useState } from "react";
 import ModMenu from "./modules/ModMenu";
+import SleepMod from "./modules/SleepMod";
+import BackButton from "./modules/components/BackButton";
 
 const HomePage = () => {
   const modules = {
@@ -16,7 +18,16 @@ const HomePage = () => {
     setmodveiw(name);
   };
 
-  let out = <h1 className='container text-center mt-5'>Page not found /:</h1>;
+  const leaveModule = () => {
+    setmodveiw("Menu");
+  };
+
+  let out = (
+    <>
+      <h1 className="container text-center mt-5">Page not found /:</h1>
+      <BackButton toModMenu={leaveModule} />
+    </>
+  );
 
   switch (currentmodview) {
     case "Menu":
@@ -29,7 +40,7 @@ const HomePage = () => {
       );
       break;
     case "Sleep":
-      out = <SleepMod />;
+      out = <SleepMod toModMenu={leaveModule} />;
       break;
   }
 
