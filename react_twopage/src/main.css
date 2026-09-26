@@ -1,0 +1,4 @@
+/* Used for global values */
+.navbar .active {
+  color: var(--bs-primary);
+}
