@@ -9,7 +9,10 @@ const ModMenu = ({ modules, enterModule, currentmodview }) => {
       style={{ height: "100%" }}
       className="container-fluid d-flex flex-column justify-content-center p-0"
     >
-      <div className="position-relative container bg-dark-subtle w-25 rounded-5 h-75 p-3 overflow-y-scroll">
+      <div
+        className="position-relative container bg-dark-subtle rounded-5 h-75 p-3 overflow-y-scroll"
+        style={{ maxWidth: "350px" }}
+      >
         {/* modules */}
         {Object.keys(modules).map((name, index) => {
           let displaytext = name;

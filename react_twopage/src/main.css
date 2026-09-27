@@ -1,4 +1,10 @@
 /* Used for global values */
+:root {
+  --sleep-color: hsl(229, 69%, 56%);
+  --exercise-color: hsl(113, 56%, 51%);
+  --food-color: hsl(0, 69%, 56%);
+}
+
 .navbar .active {
   color: var(--bs-primary);
 }

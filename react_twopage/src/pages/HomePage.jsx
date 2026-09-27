@@ -2,13 +2,15 @@ import { useState } from "react";
 import ModMenu from "./modules/ModMenu";
 import SleepMod from "./modules/SleepMod";
 import BackButton from "./modules/components/BackButton";
+import ExerciseMod from "./modules/ExerciseMod";
+import FoodMod from "./modules/ExerciseMod";
 
 const HomePage = () => {
   const modules = {
     Number: "black",
-    Sleep: "#2647c9",
-    Exercise: "#d24545ff",
-    Nutition: "rgb(58, 127, 55)",
+    Sleep: "var(--sleep-color)",
+    Exercise: "var(--exercise-color)",
+    Food: "var(--food-color)",
     Final: "black",
   };
 
@@ -40,7 +42,15 @@ const HomePage = () => {
       );
       break;
     case "Sleep":
-      out = <SleepMod toModMenu={leaveModule} />;
+      out = <SleepMod toModMenu={leaveModule} maincolor={modules["Sleep"]} />;
+      break;
+    case "Exercise":
+      out = (
+        <ExerciseMod toModMenu={leaveModule} maincolor={modules["Exercise"]} />
+      );
+      break;
+    case "Food":
+      out = <FoodMod toModMenu={leaveModule} maincolor={modules["Food"]} />;
       break;
   }
 
