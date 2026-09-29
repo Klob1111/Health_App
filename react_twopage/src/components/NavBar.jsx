@@ -1,21 +1,25 @@
 const navicons = [" bi-house-fill", " bi-fire"];
 const iconsize = "40px";
 
-const NavBar = ({ activelink, changePage, linkitems }) => {
+const NavBar = ({ activelink, changePage, linkitems, accentcolor }) => {
   return (
     <nav className='navbar navbar-expand bg-dark-subtle fixed-bottom p-0'>
       <div className='container-fluid p-0'>
         <div className='navbar-nav w-100 d-flex justify-content-around'>
           {linkitems.map((item, index) => {
-            const isactive = activelink == linkitems[index] ? " active" : "";
+            const isactive =
+              activelink == linkitems[index] ? accentcolor : "#3a3a3a";
             const navdisplay =
               navicons[index] !== undefined ? (
                 <i
-                  className={navicons[index] + isactive}
-                  style={{ fontSize: iconsize }}
+                  className={navicons[index]}
+                  style={{ fontSize: iconsize, color: isactive }}
                 />
               ) : (
-                <p className={isactive} style={{ fontSize: iconsize }}>
+                <p
+                  className={isactive}
+                  style={{ fontSize: iconsize, color: isactive }}
+                >
                   {item}
                 </p>
               );

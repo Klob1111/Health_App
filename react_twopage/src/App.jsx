@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage.jsx";
 function App() {
   const pages = ["Home", "Settings"];
   const [activepage, changePage] = useState(pages[0]);
+  const [accentcolor, changeAccColor] = useState("white");
 
   return (
     <>
@@ -13,13 +14,14 @@ function App() {
         style={{ height: "calc(100vh - 60px)" }}
       >
         {/* stage */}
-        {activepage == "Home" && <HomePage />}
+        {activepage == "Home" && <HomePage changeAccColor={changeAccColor} />}
       </div>
 
       <NavBar
         activelink={activepage}
         changePage={changePage}
         linkitems={pages}
+        accentcolor={accentcolor}
       ></NavBar>
     </>
   );

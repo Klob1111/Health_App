@@ -5,7 +5,7 @@ import BackButton from "./modules/components/BackButton";
 import ExerciseMod from "./modules/ExerciseMod";
 import FoodMod from "./modules/ExerciseMod";
 
-const HomePage = () => {
+const HomePage = ({ changeAccColor }) => {
   const modules = {
     Number: "black",
     Sleep: "var(--sleep-color)",
@@ -17,16 +17,18 @@ const HomePage = () => {
   const [currentmodview, setmodveiw] = useState("Menu");
 
   const enterModule = (name) => {
+    changeAccColor(modules[name]);
     setmodveiw(name);
   };
 
   const leaveModule = () => {
     setmodveiw("Menu");
+    changeAccColor("white");
   };
 
   let out = (
     <>
-      <h1 className="container text-center mt-5">Page not found /:</h1>
+      <h1 className='container text-center mt-5'>Page not found /:</h1>
       <BackButton toModMenu={leaveModule} />
     </>
   );
