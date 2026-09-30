@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { GlobalContext } from "../App.jsx";
+
 import ModMenu from "./modules/ModMenu";
 import SleepMod from "./modules/SleepMod";
 import BackButton from "./modules/components/BackButton";
 import ExerciseMod from "./modules/ExerciseMod";
 import FoodMod from "./modules/ExerciseMod";
 
-const HomePage = ({ changeAccColor }) => {
+const HomePage = () => {
+  const changeAccColor = useContext(GlobalContext).changeAccColor;
+
   const modules = {
     Number: "black",
     Sleep: "var(--sleep-color)",

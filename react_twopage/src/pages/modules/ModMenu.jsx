@@ -7,10 +7,10 @@ const ModMenu = ({ modules, enterModule, currentmodview }) => {
   return (
     <div
       style={{ height: "100%" }}
-      className="container-fluid d-flex flex-column justify-content-center p-0"
+      className='container-fluid d-flex flex-column justify-content-center p-0'
     >
       <div
-        className="position-relative container bg-dark-subtle rounded-5 h-75 p-3 overflow-y-scroll"
+        className='position-relative container bg-dark-subtle rounded-5 h-75 p-3 overflow-y-scroll'
         style={{ maxWidth: "350px" }}
       >
         {/* modules */}
@@ -58,9 +58,9 @@ const ModuleDisplay = ({ name, text, color, boiler, onClick }) => {
 
       {/* connecting bar */}
       {name != "Number" && (
-        <div className="position-relative z-0" style={{ height: 0 }}>
+        <div className='position-relative z-0' style={{ height: 0 }}>
           <div
-            className="bg-light position-relative start-50 translate-middle-x"
+            className='bg-light position-relative start-50 translate-middle-x'
             style={{ height: "30px", width: "5px", top: "-105px" }}
           ></div>
         </div>

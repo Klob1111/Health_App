@@ -8,3 +8,7 @@
 .navbar .active {
   color: var(--bs-primary);
 }
+
+.no-hover-color:hover {
+  color: var(--bs-btn-color);
+}

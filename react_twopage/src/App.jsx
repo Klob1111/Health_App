@@ -1,14 +1,45 @@
-import { useState } from "react";
+import { createContext, useState } from "react";
+
 import NavBar from "./components/NavBar.jsx";
 import HomePage from "./pages/HomePage.jsx";
+import SleepBlocker from "./components/SleepBlocker";
+
+//context
+const GlobalContext = createContext();
 
 function App() {
   const pages = ["Home", "Settings"];
-  const [activepage, changePage] = useState(pages[0]);
+
+  //global states
+  const [activepage, changePageState] = useState(pages[0]);
   const [accentcolor, changeAccColor] = useState("white");
+  const [sleeplock, setSleepLock] = useState(false);
+
+  const changePage = (state) => {
+    changePageState(state);
+    changeAccColor("white");
+  };
+
+  //use sleep blocker
+  if (sleeplock) {
+    return (
+      <GlobalContext.Provider value={setSleepLock}>
+        <SleepBlocker></SleepBlocker>
+      </GlobalContext.Provider>
+    );
+  }
 
   return (
-    <>
+    <GlobalContext.Provider
+      value={{
+        activepage,
+        changePageState,
+        accentcolor,
+        changeAccColor,
+        sleeplock,
+        setSleepLock,
+      }}
+    >
       <div
         className='container-flud p-0'
         style={{ height: "calc(100vh - 60px)" }}
@@ -23,8 +54,9 @@ function App() {
         linkitems={pages}
         accentcolor={accentcolor}
       ></NavBar>
-    </>
+    </GlobalContext.Provider>
   );
 }
 
+export { GlobalContext };
 export default App;

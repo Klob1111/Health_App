@@ -1,7 +1,12 @@
+import { GlobalContext } from "../App.jsx";
+import { useContext } from "react";
+
 const navicons = [" bi-house-fill", " bi-fire"];
 const iconsize = "40px";
 
-const NavBar = ({ activelink, changePage, linkitems, accentcolor }) => {
+const NavBar = ({ activelink, changePage, linkitems }) => {
+  const accentcolor = useContext(GlobalContext).accentcolor;
+
   return (
     <nav className='navbar navbar-expand bg-dark-subtle fixed-bottom p-0'>
       <div className='container-fluid p-0'>
