@@ -42,7 +42,7 @@ function App() {
     >
       <div
         className='container-flud p-0'
-        style={{ height: "calc(100vh - 60px)" }}
+        style={{ height: "calc(100vh - 60px)", minHeight: "600px" }}
       >
         {/* stage */}
         {activepage == "Home" && <HomePage changeAccColor={changeAccColor} />}
