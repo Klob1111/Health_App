@@ -14,7 +14,7 @@ const ModMenu = ({ modules, enterModule, currentmodview }) => {
         style={{ maxWidth: "350px" }}
       >
         {/* modules */}
-        {Object.keys(modules).map((name, index) => {
+        {Object.keys(modules).map((name) => {
           let displaytext = name;
 
           switch (name) {

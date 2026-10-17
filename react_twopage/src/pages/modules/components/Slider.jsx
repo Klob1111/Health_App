@@ -56,7 +56,7 @@ const Slider = ({
       ref={sliderRef}
     >
       <p className='position-absolute fs-3 z-2 start-50 top-50 translate-middle'>
-        {val}
+        {val < 12 ? (val % 12) + 1 + ":00AM" : (val % 12) + 1 + ":00PM"}
       </p>
 
       {/* slider knob */}

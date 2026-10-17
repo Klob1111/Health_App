@@ -7,8 +7,10 @@ import Slider from "./components/Slider";
 const SleepMod = ({ toModMenu, maincolor }) => {
   const setSleepLock = useContext(GlobalContext).setSleepLock;
   const [sleepgoal, setSleepGoal] = useState(8);
-  const [sleepexpect, setSleepExpect] = useState(8);
   const [sleepstart, setSleepStart] = useState(2);
+  const [sleepend, setSleepEnd] = useState(2);
+
+  const excpectedsleep = Math.abs(sleepend - sleepstart);
 
   return (
     <div className='w-100 h-100' style={{ backgroundColor: maincolor }}>
@@ -70,19 +72,19 @@ const SleepMod = ({ toModMenu, maincolor }) => {
               <div className='container text-center fs-2 fw-bold'>
                 Expected Sleep:
               </div>
-              {sleepgoal <= sleepexpect ? (
+              {sleepgoal <= excpectedsleep ? (
                 <div
                   className='container text-center'
                   style={{ fontSize: "65px" }}
                 >
-                  {formatTargetSleep(sleepexpect)}
+                  {formatTargetSleep(excpectedsleep)}
                 </div>
               ) : (
                 <div
                   className='container text-center position-relative'
                   style={{ fontSize: "65px", color: "red" }}
                 >
-                  {formatTargetSleep(sleepexpect)}
+                  {formatTargetSleep(excpectedsleep)}
                   <p className='fs-5 position-absolute p-3 start-50 translate-middle'>
                     below target
                   </p>
@@ -100,18 +102,32 @@ const SleepMod = ({ toModMenu, maincolor }) => {
               Sleep Shedule
             </div>
 
-            <div className='flex-grow-1 container-fluid d-flex flex-column align-items-center justify-content-around p-0'>
+            <div className='flex-grow-1 container-fluid d-flex flex-column align-items-center justify-content-around p-0 position-relative'>
+              <div
+                className='z-0 w-100 h-100 position-absolute d-flex justify-content-between align-items-center'
+                style={{ maxWidth: "750px" }}
+              >
+                {Array.from({ length: 24 }, (none, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className='bg-secondary rounded'
+                      style={{ height: "80%", width: "3px" }}
+                    ></div>
+                  );
+                })}
+              </div>
               <Slider
                 val={sleepstart}
                 valChange={setSleepStart}
-                slidersteps={100}
+                slidersteps={23}
                 slidermaxlength={800}
                 sliderwidth={50}
               ></Slider>
               <Slider
-                val={sleepstart}
-                valChange={setSleepStart}
-                slidersteps={100}
+                val={sleepend}
+                valChange={setSleepEnd}
+                slidersteps={23}
                 slidermaxlength={800}
                 sliderwidth={50}
               ></Slider>
