@@ -2,19 +2,20 @@ import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../App";
 
 const Timer = ({ initial }) => {
+  //inital time is in seconds
+  const [endtime, setEndTime] = useState(() => {
+    const end = localStorage.getItem("endTime");
+    return end !== null ? Math.max(0, Number(end)) : 0;
+  });
+  //init to infinity so it doesn't end instantly
+  const [timeleft, setTimeLeft] = useState(Math.abs(endtime - Date.now()));
   const setSleepLock = useContext(GlobalContext).setSleepLock;
-  const [timeleft, setTimeLeft] = useState(initial);
-
-  const removeTime = () => {
-    setTimeLeft((currenttime) => {
-      return currenttime - 1;
-    });
-  };
 
   const formatTime = (currenttime) => {
-    let secs = currenttime % 60;
-    let mins = Math.floor(currenttime / 60) % 60;
-    let hrs = Math.floor(currenttime / 3600);
+    const sectime = Math.ceil(currenttime / 1000);
+    let secs = sectime % 60;
+    let mins = Math.floor(sectime / 60) % 60;
+    let hrs = Math.floor(sectime / 3600);
 
     if (secs < 10) {
       secs = "0" + secs;
@@ -27,9 +28,23 @@ const Timer = ({ initial }) => {
     return hrs + ":" + mins + ":" + secs;
   };
 
-  //use effect to avoid creating a new interval on re-render
+  //set end time and interval
   useEffect(() => {
-    const interval = setInterval(removeTime, 1000);
+    //init end time
+    let end = endtime;
+    if (end === 0) {
+      end = Date.now() + initial * 1000;
+      setEndTime(end);
+
+      localStorage.setItem("endTime", end);
+    }
+
+    const getTimeLeft = () => {
+      setTimeLeft(end - Date.now());
+    };
+
+    getTimeLeft();
+    const interval = setInterval(getTimeLeft, 100);
 
     return () => {
       clearInterval(interval);

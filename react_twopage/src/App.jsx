@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 import NavBar from "./components/NavBar.jsx";
 import HomePage from "./pages/HomePage.jsx";
@@ -13,13 +13,25 @@ function App() {
   //global states
   const [activepage, changePageState] = useState(pages[0]);
   const [accentcolor, changeAccColor] = useState("white");
-  const [sleeplock, setSleepLock] = useState(false);
+  const [sleeplock, setSleepLock] = useState(() => {
+    const lock = localStorage.getItem("sleepLock");
+    return lock !== null ? lock === "true" : false;
+  });
   const [usedsleeptime, setUsedSleepTime] = useState(20); //used to tell the sleep blocker how long to wait, set when the sleep button is clickes
 
   const changePage = (state) => {
     changePageState(state);
     changeAccColor("white");
   };
+
+  useEffect(() => {
+    localStorage.setItem("sleepLock", sleeplock);
+  }, [sleeplock]);
+
+  //remove timer when lock isn't on
+  if (!sleeplock) {
+    localStorage.removeItem("endTime");
+  }
 
   //use sleep blocker
   if (sleeplock) {
