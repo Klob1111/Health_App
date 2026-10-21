@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../App";
 
 const Timer = ({ initial }) => {
-  const setSleepLock = useContext(GlobalContext);
+  const setSleepLock = useContext(GlobalContext).setSleepLock;
   const [timeleft, setTimeLeft] = useState(initial);
 
   const removeTime = () => {
@@ -12,14 +12,19 @@ const Timer = ({ initial }) => {
   };
 
   const formatTime = (currenttime) => {
-    const mins = Math.floor(currenttime / 60);
     let secs = currenttime % 60;
+    let mins = Math.floor(currenttime / 60) % 60;
+    let hrs = Math.floor(currenttime / 3600);
 
     if (secs < 10) {
       secs = "0" + secs;
     }
 
-    return mins + ":" + secs;
+    if (mins < 10) {
+      mins = "0" + mins;
+    }
+
+    return hrs + ":" + mins + ":" + secs;
   };
 
   //use effect to avoid creating a new interval on re-render
@@ -33,7 +38,7 @@ const Timer = ({ initial }) => {
 
   //check if time is 0 when it changes
   useEffect(() => {
-    if (timeleft == 0) {
+    if (timeleft <= 0) {
       setSleepLock(false);
     }
   }, [timeleft]);

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GlobalContext } from "../../../App.jsx";
 import { clamp } from "../../../utils.jsx";
 
@@ -8,9 +8,11 @@ const Slider = ({
   slidersteps,
   slidermaxlength,
   sliderwidth,
+  bgcol,
+  maincol,
+  reversed = false,
 }) => {
   //length and height of the knob is equal to the width of the slider
-  const color = useContext(GlobalContext).accentcolor;
   const sliderRef = useRef(null);
   const [sliderlength, changeSliderLength] = useState(slidermaxlength);
 
@@ -47,25 +49,21 @@ const Slider = ({
 
   return (
     <div
-      className='w-100 rounded-pill overflow-hidden position-relative bg-secondary'
+      className='w-100 rounded-pill overflow-hidden position-relative'
       style={{
         maxWidth: slidermaxlength + "px",
-        backgroundColor: "white",
+        backgroundColor: bgcol,
         height: sliderwidth + "px",
       }}
       ref={sliderRef}
     >
-      <p className='position-absolute fs-3 z-2 start-50 top-50 translate-middle'>
-        {val < 12 ? (val % 12) + 1 + ":00AM" : (val % 12) + 1 + ":00PM"}
-      </p>
-
       {/* slider knob */}
       <div
         className='h-100 position-absolute z-1 rounded-circle'
         style={{
           aspectRatio: "1 / 1",
           backgroundColor: "white",
-          border: "4px solid " + color,
+          border: "4px solid " + maincol,
           left: pos + "px",
           cursor: "grab",
         }}
@@ -91,10 +89,17 @@ const Slider = ({
 
       {/* bar fill */}
       <div
-        className='h-100 position-absolute start-0'
+        className={
+          "h-100 position-absolute start-0 " +
+          (reversed ? "start-100" : "start-0")
+        }
         style={{
-          width: pos + sliderwidth / 2 + "px",
-          backgroundColor: color,
+          width:
+            (reversed
+              ? sliderlength - pos - sliderwidth / 2
+              : pos + sliderwidth / 2) + "px",
+          backgroundColor: maincol,
+          transform: reversed ? "translateX(-100%)" : "",
         }}
       ></div>
     </div>

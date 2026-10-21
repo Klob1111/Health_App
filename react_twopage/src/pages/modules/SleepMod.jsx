@@ -1,16 +1,30 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../../App.jsx";
 
 import BackButton from "./components/BackButton";
-import Slider from "./components/Slider";
+import Slider from "./components/slider";
 
 const SleepMod = ({ toModMenu, maincolor }) => {
   const setSleepLock = useContext(GlobalContext).setSleepLock;
+  const setUsedSleepTime = useContext(GlobalContext).setUsedSleepTime;
   const [sleepgoal, setSleepGoal] = useState(8);
-  const [sleepstart, setSleepStart] = useState(2);
-  const [sleepend, setSleepEnd] = useState(2);
+  const [sleepstart, setSleepStart] = useState(39);
+  const [sleepend, setSleepEnd] = useState(31);
 
-  const excpectedsleep = Math.abs(sleepend - sleepstart);
+  const excpectedsleep = sleepend / 4 + 12 - sleepstart / 4;
+  const badsleep = excpectedsleep < sleepgoal;
+
+  useEffect(() => {
+    if (excpectedsleep > 12) {
+      setSleepEnd((s) => s - 1);
+    }
+  }, [sleepstart]);
+
+  useEffect(() => {
+    if (excpectedsleep > 12) {
+      setSleepStart((s) => s + 1);
+    }
+  }, [sleepend]);
 
   return (
     <div className='w-100 h-100' style={{ backgroundColor: maincolor }}>
@@ -34,7 +48,7 @@ const SleepMod = ({ toModMenu, maincolor }) => {
                 className='container text-center mt-2 position-relative'
                 style={{ fontSize: "65px" }}
               >
-                {formatTargetSleep(sleepgoal)}
+                {formatSleephrs(sleepgoal)}
                 {sleepgoal < 8 && (
                   <i
                     className={
@@ -72,24 +86,21 @@ const SleepMod = ({ toModMenu, maincolor }) => {
               <div className='container text-center fs-2 fw-bold'>
                 Expected Sleep:
               </div>
-              {sleepgoal <= excpectedsleep ? (
-                <div
-                  className='container text-center'
-                  style={{ fontSize: "65px" }}
-                >
-                  {formatTargetSleep(excpectedsleep)}
-                </div>
-              ) : (
-                <div
-                  className='container text-center position-relative'
-                  style={{ fontSize: "65px", color: "red" }}
-                >
-                  {formatTargetSleep(excpectedsleep)}
+
+              <div
+                className='container text-center position-relative'
+                style={{
+                  fontSize: "65px",
+                  color: badsleep ? "red" : "",
+                }}
+              >
+                {formatSleephrs(excpectedsleep)}
+                {badsleep && (
                   <p className='fs-5 position-absolute p-3 start-50 translate-middle'>
                     below target
                   </p>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
 
@@ -102,34 +113,34 @@ const SleepMod = ({ toModMenu, maincolor }) => {
               Sleep Shedule
             </div>
 
-            <div className='flex-grow-1 container-fluid d-flex flex-column align-items-center justify-content-around p-0 position-relative'>
-              <div
-                className='z-0 w-100 h-100 position-absolute d-flex justify-content-between align-items-center'
-                style={{ maxWidth: "750px" }}
-              >
-                {Array.from({ length: 24 }, (none, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className='bg-secondary rounded'
-                      style={{ height: "80%", width: "3px" }}
-                    ></div>
-                  );
-                })}
-              </div>
+            <div className='flex-grow-1 container-fluid d-flex flex-column align-items-center justify-content-center p-0 position-relative'>
               <Slider
                 val={sleepstart}
                 valChange={setSleepStart}
-                slidersteps={23}
+                slidersteps={47}
                 slidermaxlength={800}
                 sliderwidth={50}
+                maincol={maincolor}
+                bgcol={"var(--bs-secondary-bg)"}
+                reversed
               ></Slider>
+              <div className='height-0 text-center my-4'>
+                <p className='fs-3 z-2 m-0'>
+                  {formatSleeptime((sleepstart + 1) / 4, true)}
+                </p>
+                <p className='m-0'>to</p>
+                <p className='fs-3 z-2 m-0'>
+                  {formatSleeptime((sleepend + 1) / 4, false)}
+                </p>
+              </div>
               <Slider
                 val={sleepend}
                 valChange={setSleepEnd}
-                slidersteps={23}
+                slidersteps={47}
                 slidermaxlength={800}
                 sliderwidth={50}
+                maincol={maincolor}
+                bgcol={"var(--bs-secondary-bg)"}
               ></Slider>
             </div>
           </div>
@@ -140,6 +151,7 @@ const SleepMod = ({ toModMenu, maincolor }) => {
           <button
             className='btn fs-1 bg-dark-subtle'
             onClick={() => {
+              setUsedSleepTime(excpectedsleep * 3600);
               setSleepLock(true);
             }}
           >
@@ -156,13 +168,32 @@ const updateTargetSleep = (hours, goal, changeGoal) => {
   changeGoal(finalhours);
 };
 
-const formatTargetSleep = (hours) => {
+const formatSleephrs = (hours) => {
   const hrs = Math.floor(hours);
   let mins = Math.floor((hours - Math.floor(hours)) * 60);
   if (mins == 0) {
     mins = "00";
   }
-  return hrs + ":" + mins + ":" + "00";
+
+  return hrs + ":" + mins + ":00";
+};
+
+const formatSleeptime = (hours, ispm) => {
+  let hrs = Math.floor(hours);
+  let mins = Math.floor((hours - Math.floor(hours)) * 60);
+
+  if (mins == 0) {
+    mins = "00";
+  }
+  if (hrs == 0) {
+    hrs = "12";
+  } else if (hrs == 12) {
+    ispm = !ispm;
+  }
+
+  const suffix = ispm ? "PM" : "AM";
+
+  return hrs + ":" + mins + suffix;
 };
 
 export default SleepMod;

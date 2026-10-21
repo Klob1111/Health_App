@@ -3,7 +3,8 @@ import { GlobalContext } from "../App";
 import Timer from "./Timer";
 
 const SleepBlocker = () => {
-  const setSleepLock = useContext(GlobalContext);
+  const setSleepLock = useContext(GlobalContext).setSleepLock;
+  const sleeptime = useContext(GlobalContext).usedsleeptime;
 
   return (
     <div
@@ -14,7 +15,7 @@ const SleepBlocker = () => {
         <div className='container fs-1 text-center'>You're in Sleep Mode</div>
 
         <div className='fs-1 text-center'>
-          <Timer initial='90'></Timer>
+          <Timer initial={sleeptime}></Timer>
           <button
             className='btn fs-1 bg-dark no-hover-color'
             onClick={() => setSleepLock(false)}

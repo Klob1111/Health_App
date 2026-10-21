@@ -14,6 +14,7 @@ function App() {
   const [activepage, changePageState] = useState(pages[0]);
   const [accentcolor, changeAccColor] = useState("white");
   const [sleeplock, setSleepLock] = useState(false);
+  const [usedsleeptime, setUsedSleepTime] = useState(20); //used to tell the sleep blocker how long to wait, set when the sleep button is clickes
 
   const changePage = (state) => {
     changePageState(state);
@@ -23,7 +24,7 @@ function App() {
   //use sleep blocker
   if (sleeplock) {
     return (
-      <GlobalContext.Provider value={setSleepLock}>
+      <GlobalContext.Provider value={{ setSleepLock, usedsleeptime }}>
         <SleepBlocker></SleepBlocker>
       </GlobalContext.Provider>
     );
@@ -38,6 +39,7 @@ function App() {
         changeAccColor,
         sleeplock,
         setSleepLock,
+        setUsedSleepTime,
       }}
     >
       <div
