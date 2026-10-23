@@ -3,12 +3,13 @@ import { createContext, useEffect, useState } from "react";
 import NavBar from "./components/NavBar.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import SleepBlocker from "./components/SleepBlocker";
+import StreaksPage from "./pages/StreaksPage.jsx";
 
 //context
 const GlobalContext = createContext();
 
 function App() {
-  const pages = ["Home", "Settings"];
+  const pages = ["Home", "Streaks"];
 
   //global states
   const [activepage, changePageState] = useState(pages[0]);
@@ -20,6 +21,7 @@ function App() {
   });
   const [usedsleeptime, setUsedSleepTime] = useState(20); //used to tell the sleep blocker how long to wait, set when the sleep button is clickes
 
+  //modules
   const [modules, updateModules] = useState(() => {
     const og = localStorage.getItem("modules");
     if (og !== null) {
@@ -27,20 +29,41 @@ function App() {
     }
 
     return {
-      Number: { color: "black", canenter: false, value: 10 },
-      Sleep: { color: "var(--sleep-color)", canenter: true, multi: 1 },
-      Final: { color: "black", canenter: false },
+      Number: { color: "black", color2: "gray", canenter: false, value: 10 },
+      Sleep: {
+        color: "var(--sleep-color)",
+        color2: "var(--sleep-color-2)",
+        canenter: true,
+        multi: 1,
+      },
+      Final: { color: "black", color2: "gray", canenter: false },
+    };
+  });
+
+  //streaks
+  const [streaks, updateStreaks] = useState(() => {
+    const og = localStorage.getItem("streaks");
+    if (og !== null) {
+      return JSON.parse(og);
+    }
+
+    return {
+      Sleep: 20,
     };
   });
 
   const changePage = (state) => {
     changePageState(state);
-    // changeAccColor("white");
   };
 
+  //localstorage updates
   useEffect(() => {
     localStorage.setItem("modules", JSON.stringify(modules));
   }, [modules]);
+
+  useEffect(() => {
+    localStorage.setItem("streaks", JSON.stringify(streaks));
+  }, [streaks]);
 
   useEffect(() => {
     localStorage.setItem("sleepLock", sleeplock);
@@ -67,6 +90,8 @@ function App() {
         changePageState,
         modules,
         updateModules,
+        streaks,
+        updateStreaks,
         currentmodview,
         setModView,
         accentcolor,
@@ -77,11 +102,12 @@ function App() {
       }}
     >
       <div
-        className='container-flud p-0'
+        className="container-flud p-0"
         style={{ height: "calc(100vh - 60px)", minHeight: "600px" }}
       >
         {/* stage */}
         {activepage == "Home" && <HomePage />}
+        {activepage == "Streaks" && <StreaksPage />}
       </div>
 
       <NavBar

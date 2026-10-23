@@ -6,10 +6,12 @@ import BackButton from "./components/BackButton";
 import Slider from "./components/slider";
 
 const SleepMod = ({ toModMenu, maincolor }) => {
-  const modules = useContext(GlobalContext).modules;
-  const updateModules = useContext(GlobalContext).updateModules;
-  const setSleepLock = useContext(GlobalContext).setSleepLock;
-  const setUsedSleepTime = useContext(GlobalContext).setUsedSleepTime;
+  const context = useContext(GlobalContext);
+  const updateModules = context.updateModules;
+  const streaks = context.streaks;
+  const updateStreaks = context.updateStreaks;
+  const setSleepLock = context.setSleepLock;
+  const setUsedSleepTime = context.setUsedSleepTime;
 
   //find already-set values
   const [sleepgoal, setSleepGoal] = useState(() => {
@@ -40,18 +42,20 @@ const SleepMod = ({ toModMenu, maincolor }) => {
     0.25,
     1.5
   );
+  const streakscore = streaks.Sleep;
 
-  const multioutput = amountscore;
+  const multioutput = amountscore * streakscore;
 
   const getOutputText = () => {
     return (
-      <p className='mb-0'>
-        Sleep target deviation ({amountscore}x) + streak
+      <p className="mb-0">
+        Sleep target deviation ({amountscore}x) * streak ({streakscore}x)
         <br /> = <b>{multioutput}x total multiplier</b>
       </p>
     );
   };
 
+  //update stored modules on multi change
   useEffect(() => {
     updateModules((prev) => ({
       ...prev,
@@ -59,6 +63,7 @@ const SleepMod = ({ toModMenu, maincolor }) => {
     }));
   }, [multioutput]);
 
+  //prevent schedule from going over 12 hours
   useEffect(() => {
     if (excpectedsleep > 12) {
       setSleepEnd((s) => s - 1);
@@ -80,25 +85,25 @@ const SleepMod = ({ toModMenu, maincolor }) => {
   }, [sleepgoal]);
 
   return (
-    <div className='w-100 h-100' style={{ backgroundColor: maincolor }}>
+    <div className="w-100 h-100" style={{ backgroundColor: maincolor }}>
       <BackButton toModMenu={toModMenu} />
 
-      <div className='h-100 d-flex flex-column justify-content-center py-4'>
-        <header className='position-absolute container-fluid top-0 p-4'>
-          <h1 className='container text-center fw-bold'>My Sleep</h1>
+      <div className="h-100 d-flex flex-column justify-content-center py-4">
+        <header className="position-absolute container-fluid top-0 p-4">
+          <h1 className="container text-center fw-bold">My Sleep</h1>
         </header>
 
-        <div className='w-100 mb-4 d-flex justify-content-around'>
+        <div className="w-100 mb-4 d-flex justify-content-around">
           <div
-            className='bg-dark rounded-4 d-flex flex-column p-3'
+            className="bg-dark rounded-4 d-flex flex-column p-3"
             style={{ width: "25%" }}
           >
-            <div className='flex-fill'>
-              <div className='container text-center fs-2 fw-bold'>
+            <div className="flex-fill">
+              <div className="container text-center fs-2 fw-bold">
                 Target Sleep:
               </div>
               <div
-                className='container text-center mt-2 position-relative'
+                className="container text-center mt-2 position-relative"
                 style={{ fontSize: "65px" }}
               >
                 {formatSleephrs(sleepgoal)}
@@ -113,9 +118,9 @@ const SleepMod = ({ toModMenu, maincolor }) => {
               </div>
 
               {/*goal change buttons */}
-              <div className='w-75 container text-center d-flex justify-content-evenly mt-2'>
+              <div className="w-75 container text-center d-flex justify-content-evenly mt-2">
                 <button
-                  className='border-0 p-2 rounded-2 fs-4'
+                  className="border-0 p-2 rounded-2 fs-4"
                   style={{ backgroundColor: maincolor, width: "35%" }}
                   onClick={() =>
                     updateTargetSleep(-0.25, sleepgoal, setSleepGoal)
@@ -124,7 +129,7 @@ const SleepMod = ({ toModMenu, maincolor }) => {
                   -
                 </button>
                 <button
-                  className='border-0 p-2 rounded-2 fs-4'
+                  className="border-0 p-2 rounded-2 fs-4"
                   style={{ backgroundColor: maincolor, width: "35%" }}
                   onClick={() =>
                     updateTargetSleep(0.25, sleepgoal, setSleepGoal)
@@ -135,13 +140,13 @@ const SleepMod = ({ toModMenu, maincolor }) => {
               </div>
             </div>
 
-            <div className='flex-fill '>
-              <div className='container text-center fs-2 fw-bold'>
+            <div className="flex-fill ">
+              <div className="container text-center fs-2 fw-bold">
                 Expected Sleep:
               </div>
 
               <div
-                className='container text-center position-relative'
+                className="container text-center position-relative"
                 style={{
                   fontSize: "65px",
                   color: badsleep ? "red" : "",
@@ -149,7 +154,7 @@ const SleepMod = ({ toModMenu, maincolor }) => {
               >
                 {formatSleephrs(excpectedsleep)}
                 {badsleep && (
-                  <p className='fs-5 position-absolute p-3 start-50 translate-middle'>
+                  <p className="fs-5 position-absolute p-3 start-50 translate-middle">
                     below target
                   </p>
                 )}
@@ -159,14 +164,14 @@ const SleepMod = ({ toModMenu, maincolor }) => {
 
           {/* slider section */}
           <div
-            className='bg-dark rounded-4 p-3 d-flex flex-column'
+            className="bg-dark rounded-4 p-3 d-flex flex-column"
             style={{ width: "65%" }}
           >
-            <div className='container text-center fs-2 mb-2 fw-bold'>
+            <div className="container text-center fs-2 mb-2 fw-bold">
               Sleep Shedule
             </div>
 
-            <div className='flex-grow-1 container-fluid d-flex flex-column align-items-center justify-content-center p-0 position-relative'>
+            <div className="flex-grow-1 container-fluid d-flex flex-column align-items-center justify-content-center p-0 position-relative">
               <Slider
                 val={sleepstart}
                 valChange={setSleepStart}
@@ -177,12 +182,12 @@ const SleepMod = ({ toModMenu, maincolor }) => {
                 bgcol={"var(--bs-secondary-bg)"}
                 reversed
               ></Slider>
-              <div className='height-0 text-center my-4'>
-                <p className='fs-3 z-2 m-0'>
+              <div className="height-0 text-center my-4">
+                <p className="fs-3 z-2 m-0">
                   {formatSleeptime((sleepstart + 1) / 4, true)}
                 </p>
-                <p className='m-0'>to</p>
-                <p className='fs-3 z-2 m-0'>
+                <p className="m-0">to</p>
+                <p className="fs-3 z-2 m-0">
                   {formatSleeptime((sleepend + 1) / 4, false)}
                 </p>
               </div>
@@ -200,15 +205,15 @@ const SleepMod = ({ toModMenu, maincolor }) => {
         </div>
 
         {/* bottom row */}
-        <div className='text-center d-flex justify-content-center px-3'>
-          <div className='bg-dark-subtle rounded-4 px-3 mx-3 flex-grow-0 d-flex align-items-center'>
-            <h1 className='text-center fw-bold px-3'>Output:</h1>
-            <div className='flex-grow-1 px-3 py-2 fs-3 d-flex align-items-center'>
+        <div className="text-center d-flex justify-content-center px-3">
+          <div className="bg-dark-subtle rounded-4 px-3 mx-3 flex-grow-0 d-flex align-items-center">
+            <h1 className="text-center fw-bold px-3">Output:</h1>
+            <div className="flex-grow-1 px-3 py-2 fs-3 d-flex align-items-center">
               {getOutputText()}
             </div>
           </div>
           <button
-            className='btn fs-1 mx-3 bg-dark-subtle'
+            className="btn fs-1 mx-3 bg-dark-subtle"
             onClick={() => {
               setUsedSleepTime(excpectedsleep * 3600);
               setSleepLock(true);
