@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../App";
 
-const Timer = ({ initial }) => {
+const Timer = ({ initial, onEnd }) => {
   //inital time is in seconds
   const [endtime, setEndTime] = useState(() => {
     const end = localStorage.getItem("endTime");
@@ -54,11 +54,11 @@ const Timer = ({ initial }) => {
   //check if time is 0 when it changes
   useEffect(() => {
     if (timeleft <= 0) {
-      setSleepLock(false);
+      onEnd();
     }
   }, [timeleft]);
 
-  return <h1>{formatTime(timeleft)}</h1>;
+  return <h1>{timeleft > 0 ? formatTime(timeleft) : "0:00:00"}</h1>;
 };
 
 export default Timer;

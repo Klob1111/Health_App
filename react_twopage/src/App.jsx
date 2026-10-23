@@ -21,25 +21,6 @@ function App() {
   });
   const [usedsleeptime, setUsedSleepTime] = useState(20); //used to tell the sleep blocker how long to wait, set when the sleep button is clickes
 
-  //modules
-  const [modules, updateModules] = useState(() => {
-    const og = localStorage.getItem("modules");
-    if (og !== null) {
-      return JSON.parse(og);
-    }
-
-    return {
-      Number: { color: "black", color2: "gray", canenter: false, value: 10 },
-      Sleep: {
-        color: "var(--sleep-color)",
-        color2: "var(--sleep-color-2)",
-        canenter: true,
-        multi: 1,
-      },
-      Final: { color: "black", color2: "gray", canenter: false },
-    };
-  });
-
   //streaks
   const [streaks, updateStreaks] = useState(() => {
     const og = localStorage.getItem("streaks");
@@ -48,7 +29,53 @@ function App() {
     }
 
     return {
-      Sleep: 20,
+      Sleep: 15,
+      // Food: 12,
+      // Exercise: 3,
+    };
+  });
+
+  const getStreakTotal = () => {
+    let total = 0;
+    Object.values(streaks).forEach((val) => {
+      total += val;
+    });
+    return total;
+  };
+
+  //modules
+  const [modules, updateModules] = useState(() => {
+    const og = localStorage.getItem("modules");
+    if (og !== null) {
+      return JSON.parse(og);
+    }
+
+    return {
+      Number: {
+        color: "black",
+        color2: "gray",
+        canenter: false,
+        value: getStreakTotal(),
+      },
+      Sleep: {
+        color: "var(--sleep-color)",
+        color2: "var(--sleep-color-2)",
+        canenter: true,
+        multi: 1,
+      },
+      // Food: {
+      //   color: "var(--food-color)",
+      //   color2: "var(--food-color-2)",
+      //   canenter: true,
+      //   multi: 1,
+      // },
+      // Exercise: {
+      //   color: "var(--exercise-color)",
+      //   color2: "var(--exercise-color-2)",
+      //   canenter: true,
+      //   multi: 1,
+      // },
+      Final: { color: "black", color2: "gray", canenter: false },
     };
   });
 
@@ -63,6 +90,12 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem("streaks", JSON.stringify(streaks));
+
+    //change base value
+    updateModules((prev) => ({
+      ...prev,
+      Number: { ...prev.Number, value: getStreakTotal() },
+    }));
   }, [streaks]);
 
   useEffect(() => {
@@ -77,7 +110,9 @@ function App() {
   //use sleep blocker
   if (sleeplock) {
     return (
-      <GlobalContext.Provider value={{ setSleepLock, usedsleeptime }}>
+      <GlobalContext.Provider
+        value={{ setSleepLock, usedsleeptime, updateStreaks }}
+      >
         <SleepBlocker></SleepBlocker>
       </GlobalContext.Provider>
     );
@@ -92,6 +127,7 @@ function App() {
         updateModules,
         streaks,
         updateStreaks,
+        getStreakTotal,
         currentmodview,
         setModView,
         accentcolor,

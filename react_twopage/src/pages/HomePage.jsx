@@ -11,25 +11,22 @@ const HomePage = () => {
   const modules = useContext(GlobalContext).modules;
   const currentmodview = useContext(GlobalContext).currentmodview;
   const setModVeiw = useContext(GlobalContext).setModView;
-  const changeAccColor = useContext(GlobalContext).changeAccColor;
 
   const enterModule = (name) => {
     if (!modules[name].canenter) {
       return;
     }
 
-    changeAccColor(modules[name].color);
     setModVeiw(name);
   };
 
   const leaveModule = () => {
     setModVeiw("Menu");
-    changeAccColor("white");
   };
 
   let out = (
     <>
-      <h1 className='container text-center mt-5'>Page not found /:</h1>
+      <h1 className="container text-center mt-5">Page not found /:</h1>
       <BackButton toModMenu={leaveModule} />
     </>
   );

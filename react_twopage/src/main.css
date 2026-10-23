@@ -2,10 +2,10 @@
 :root {
   --sleep-color: hsl(229, 69%, 56%);
   --sleep-color-2: hsl(229, 53%, 67%);
-  --exercise-color: hsl(113, 41%, 32%);
-  --exercise-color-2: hsl(113, 44%, 65%);
-  --food-color: hsl(0, 69%, 56%);
-  --food-color-2: hsl(0, 46%, 71%);
+  --food-color: hsl(113, 41%, 32%);
+  --food-color-2: hsl(111, 18%, 54%);
+  --exercise-color: hsl(0, 69%, 56%);
+  --exercise-color-2: hsl(0, 71%, 69%);
 }
 
 .navbar .active {

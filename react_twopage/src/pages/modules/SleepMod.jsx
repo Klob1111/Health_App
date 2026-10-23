@@ -12,6 +12,9 @@ const SleepMod = ({ toModMenu, maincolor }) => {
   const updateStreaks = context.updateStreaks;
   const setSleepLock = context.setSleepLock;
   const setUsedSleepTime = context.setUsedSleepTime;
+  const changeAccColor = context.changeAccColor;
+
+  changeAccColor(maincolor);
 
   //find already-set values
   const [sleepgoal, setSleepGoal] = useState(() => {
