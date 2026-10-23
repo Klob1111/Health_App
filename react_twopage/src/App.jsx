@@ -12,6 +12,7 @@ function App() {
 
   //global states
   const [activepage, changePageState] = useState(pages[0]);
+  const [currentmodview, setModView] = useState("Menu");
   const [accentcolor, changeAccColor] = useState("white");
   const [sleeplock, setSleepLock] = useState(() => {
     const lock = localStorage.getItem("sleepLock");
@@ -19,10 +20,27 @@ function App() {
   });
   const [usedsleeptime, setUsedSleepTime] = useState(20); //used to tell the sleep blocker how long to wait, set when the sleep button is clickes
 
+  const [modules, updateModules] = useState(() => {
+    const og = localStorage.getItem("modules");
+    if (og !== null) {
+      return JSON.parse(og);
+    }
+
+    return {
+      Number: { color: "black", canenter: false, value: 10 },
+      Sleep: { color: "var(--sleep-color)", canenter: true, multi: 1 },
+      Final: { color: "black", canenter: false },
+    };
+  });
+
   const changePage = (state) => {
     changePageState(state);
-    changeAccColor("white");
+    // changeAccColor("white");
   };
+
+  useEffect(() => {
+    localStorage.setItem("modules", JSON.stringify(modules));
+  }, [modules]);
 
   useEffect(() => {
     localStorage.setItem("sleepLock", sleeplock);
@@ -47,6 +65,10 @@ function App() {
       value={{
         activepage,
         changePageState,
+        modules,
+        updateModules,
+        currentmodview,
+        setModView,
         accentcolor,
         changeAccColor,
         sleeplock,
@@ -59,7 +81,7 @@ function App() {
         style={{ height: "calc(100vh - 60px)", minHeight: "600px" }}
       >
         {/* stage */}
-        {activepage == "Home" && <HomePage changeAccColor={changeAccColor} />}
+        {activepage == "Home" && <HomePage />}
       </div>
 
       <NavBar

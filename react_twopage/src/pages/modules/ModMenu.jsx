@@ -1,6 +1,7 @@
 import React from "react";
+import { getScore } from "../../utils";
 
-const ModMenu = ({ modules, enterModule, currentmodview }) => {
+const ModMenu = ({ modules, enterModule }) => {
   const moduleboiler =
     "position-relative container-fluid text-center rounded-5 p-3 fs-2 border-0 ";
 
@@ -15,17 +16,15 @@ const ModMenu = ({ modules, enterModule, currentmodview }) => {
       >
         {/* modules */}
         {Object.keys(modules).map((name) => {
-          let displaytext = name;
+          let displaytext = name + " - " + modules[name].multi + "x";
 
           switch (name) {
             case "Final":
-              displaytext = "1,000,000";
+              displaytext = getScore(modules);
               break;
             case "Number":
-              displaytext = "100";
+              displaytext = modules.Number.value;
               break;
-            case currentmodview:
-              displaytext = "thisone";
           }
 
           return (
@@ -33,7 +32,7 @@ const ModMenu = ({ modules, enterModule, currentmodview }) => {
               <ModuleDisplay
                 name={name}
                 text={displaytext}
-                color={modules[name]}
+                color={modules[name].color}
                 boiler={moduleboiler}
                 onClick={enterModule}
               />

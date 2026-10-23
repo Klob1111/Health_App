@@ -8,25 +8,22 @@ import ExerciseMod from "./modules/ExerciseMod";
 import FoodMod from "./modules/ExerciseMod";
 
 const HomePage = () => {
+  const modules = useContext(GlobalContext).modules;
+  const currentmodview = useContext(GlobalContext).currentmodview;
+  const setModVeiw = useContext(GlobalContext).setModView;
   const changeAccColor = useContext(GlobalContext).changeAccColor;
 
-  const modules = {
-    Number: "black",
-    Sleep: "var(--sleep-color)",
-    Exercise: "var(--exercise-color)",
-    Food: "var(--food-color)",
-    Final: "black",
-  };
-
-  const [currentmodview, setmodveiw] = useState("Menu");
-
   const enterModule = (name) => {
-    changeAccColor(modules[name]);
-    setmodveiw(name);
+    if (!modules[name].canenter) {
+      return;
+    }
+
+    changeAccColor(modules[name].color);
+    setModVeiw(name);
   };
 
   const leaveModule = () => {
-    setmodveiw("Menu");
+    setModVeiw("Menu");
     changeAccColor("white");
   };
 
@@ -39,25 +36,21 @@ const HomePage = () => {
 
   switch (currentmodview) {
     case "Menu":
-      out = (
-        <ModMenu
-          modules={modules}
-          enterModule={enterModule}
-          currentmodview={currentmodview}
-        />
-      );
+      out = <ModMenu modules={modules} enterModule={enterModule} />;
       break;
     case "Sleep":
-      out = <SleepMod toModMenu={leaveModule} maincolor={modules["Sleep"]} />;
-      break;
-    case "Exercise":
       out = (
-        <ExerciseMod toModMenu={leaveModule} maincolor={modules["Exercise"]} />
+        <SleepMod toModMenu={leaveModule} maincolor={modules["Sleep"].color} />
       );
       break;
-    case "Food":
-      out = <FoodMod toModMenu={leaveModule} maincolor={modules["Food"]} />;
-      break;
+    // case "Exercise":
+    //   out = (
+    //     <ExerciseMod toModMenu={leaveModule} maincolor={modules["Exercise"]} />
+    //   );
+    //   break;
+    // case "Food":
+    //   out = <FoodMod toModMenu={leaveModule} maincolor={modules["Food"]} />;
+    //   break;
   }
 
   return out;

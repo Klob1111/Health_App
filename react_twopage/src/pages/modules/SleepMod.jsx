@@ -1,30 +1,83 @@
 import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../../App.jsx";
+import { clamp } from "../../utils.jsx";
 
 import BackButton from "./components/BackButton";
 import Slider from "./components/slider";
 
 const SleepMod = ({ toModMenu, maincolor }) => {
+  const modules = useContext(GlobalContext).modules;
+  const updateModules = useContext(GlobalContext).updateModules;
   const setSleepLock = useContext(GlobalContext).setSleepLock;
   const setUsedSleepTime = useContext(GlobalContext).setUsedSleepTime;
-  const [sleepgoal, setSleepGoal] = useState(8);
-  const [sleepstart, setSleepStart] = useState(39);
-  const [sleepend, setSleepEnd] = useState(31);
+
+  //find already-set values
+  const [sleepgoal, setSleepGoal] = useState(() => {
+    const og = localStorage.getItem("sleepGoal");
+    return og !== null ? Number(og) : 8;
+  });
+  const [sleepstart, setSleepStart] = useState(() => {
+    const og = localStorage.getItem("sleepStart");
+    return og !== null ? Number(og) : 43;
+  });
+  const [sleepend, setSleepEnd] = useState(() => {
+    const og = localStorage.getItem("sleepEnd");
+    return og !== null ? Number(og) : 27;
+  });
 
   const excpectedsleep = sleepend / 4 + 12 - sleepstart / 4;
   const badsleep = excpectedsleep < sleepgoal;
+
+  //output = 1.25x, decresing for every 15 mins away from the goal (goal to 30 mins after) it is, + the 0.1x times the number of days it's been consisant, + a bonus depending on how long it's been since a shcedule change, capping at 2 weeks + challenge bonus (how leniant it is with when you go sleep)
+  const amountscore = clamp(
+    1.5 -
+      Math.max(
+        sleepgoal - excpectedsleep,
+        0,
+        excpectedsleep - sleepgoal - 0.5
+      ) /
+        2,
+    0.25,
+    1.5
+  );
+
+  const multioutput = amountscore;
+
+  const getOutputText = () => {
+    return (
+      <p className='mb-0'>
+        Sleep target deviation ({amountscore}x) + streak
+        <br /> = <b>{multioutput}x total multiplier</b>
+      </p>
+    );
+  };
+
+  useEffect(() => {
+    updateModules((prev) => ({
+      ...prev,
+      Sleep: { ...prev.Sleep, multi: multioutput },
+    }));
+  }, [multioutput]);
 
   useEffect(() => {
     if (excpectedsleep > 12) {
       setSleepEnd((s) => s - 1);
     }
+
+    localStorage.setItem("sleepStart", sleepstart);
   }, [sleepstart]);
 
   useEffect(() => {
     if (excpectedsleep > 12) {
       setSleepStart((s) => s + 1);
     }
+
+    localStorage.setItem("sleepEnd", sleepend);
   }, [sleepend]);
+
+  useEffect(() => {
+    localStorage.setItem("sleepGoal", sleepgoal);
+  }, [sleepgoal]);
 
   return (
     <div className='w-100 h-100' style={{ backgroundColor: maincolor }}>
@@ -49,12 +102,12 @@ const SleepMod = ({ toModMenu, maincolor }) => {
                 style={{ fontSize: "65px" }}
               >
                 {formatSleephrs(sleepgoal)}
-                {sleepgoal < 8 && (
+                {(sleepgoal < 8 || sleepgoal > 10) && (
                   <i
                     className={
                       "bi bi-exclamation-circle fs-3 translate-middle top-50 position-absolute"
                     }
-                    style={{ right: "5%" }}
+                    style={{ right: "3%" }}
                   />
                 )}
               </div>
@@ -146,13 +199,20 @@ const SleepMod = ({ toModMenu, maincolor }) => {
           </div>
         </div>
 
-        {/* sleep button */}
-        <div className='container text-center'>
+        {/* bottom row */}
+        <div className='text-center d-flex justify-content-center px-3'>
+          <div className='bg-dark-subtle rounded-4 px-3 mx-3 flex-grow-0 d-flex align-items-center'>
+            <h1 className='text-center fw-bold px-3'>Output:</h1>
+            <div className='flex-grow-1 px-3 py-2 fs-3 d-flex align-items-center'>
+              {getOutputText()}
+            </div>
+          </div>
           <button
-            className='btn fs-1 bg-dark-subtle'
+            className='btn fs-1 mx-3 bg-dark-subtle'
             onClick={() => {
               setUsedSleepTime(excpectedsleep * 3600);
               setSleepLock(true);
+              toModMenu();
             }}
           >
             Go to sleep!
