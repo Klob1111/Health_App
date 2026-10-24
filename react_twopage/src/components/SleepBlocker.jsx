@@ -7,7 +7,7 @@ const SleepBlocker = () => {
   const setSleepLock = context.setSleepLock;
   const sleeptime = context.usedsleeptime;
   const updateStreaks = context.updateStreaks;
-  const [message, setMessage] = useState(`You're in Sleep Mode`);
+  const [sleepdone, changeSleepDone] = useState(false);
 
   return (
     <div
@@ -15,21 +15,30 @@ const SleepBlocker = () => {
       style={{ color: "#3d3d3d" }}
     >
       <div className="h-100 d-flex flex-column justify-content-center">
-        <div className="container fs-1 text-center">{message}</div>
+        <div className="container fs-1 text-center">
+          {sleepdone ? "Time to wake up!" : `You're in sleep mode`}
+        </div>
 
         <div className="fs-1 text-center">
           <Timer
             initial={10}
             onEnd={() => {
-              setMessage("Time to wake up!");
+              changeSleepDone(true);
             }}
           ></Timer>
           <button
             className="btn fs-1 bg-dark no-hover-color"
-            onClick={() => setSleepLock(false)}
+            onClick={() => {
+              updateStreaks((prev) => ({
+                ...prev,
+                Sleep: sleepdone ? prev.Sleep + 1 : 1,
+              }));
+              setSleepLock(false);
+            }}
           >
-            bypass
+            {sleepdone ? "Wake up" : "bypass"}
           </button>
+          {/* Skip night button */}
           <br></br>
           <button
             className="btn fs-1 mt-3 bg-dark no-hover-color"

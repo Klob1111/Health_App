@@ -22,6 +22,9 @@ const ModMenu = ({ modules, enterModule }) => {
         {/* modules */}
         {Object.keys(modules).map((name) => {
           let displaytext = name + " - " + modules[name].multi + "x";
+          if (modules[name].multi == -1) {
+            displaytext = name + " - " + "unset";
+          }
 
           switch (name) {
             case "Final":

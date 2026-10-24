@@ -61,7 +61,7 @@ function App() {
         color: "var(--sleep-color)",
         color2: "var(--sleep-color-2)",
         canenter: true,
-        multi: 1,
+        multi: -1,
       },
       // Food: {
       //   color: "var(--food-color)",

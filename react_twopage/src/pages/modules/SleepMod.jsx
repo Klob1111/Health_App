@@ -33,8 +33,8 @@ const SleepMod = ({ toModMenu, maincolor }) => {
   const excpectedsleep = sleepend / 4 + 12 - sleepstart / 4;
   const badsleep = excpectedsleep < sleepgoal;
 
-  //output = 1.25x, decresing for every 15 mins away from the goal (goal to 30 mins after) it is, + the 0.1x times the number of days it's been consisant, + a bonus depending on how long it's been since a shcedule change, capping at 2 weeks + challenge bonus (how leniant it is with when you go sleep)
-  const amountscore = clamp(
+  //output = 1.25x, decresing for every 15 mins away from the goal (goal to 30 mins after) it is + a bonus depending on how good the sleep is + the 0.1x times the number of days it's been consisant, + a bonus depending on how long it's been since a shedule change, capping at 2 weeks + challenge bonus (how leniant it is with when you go sleep)
+  const goalscore = clamp(
     1.5 -
       Math.max(
         sleepgoal - excpectedsleep,
@@ -46,13 +46,18 @@ const SleepMod = ({ toModMenu, maincolor }) => {
     1.5
   );
   const streakscore = streaks.Sleep;
+  const amountscore = Math.max(
+    1.5 - Math.max(8 - excpectedsleep, 0, excpectedsleep - 10) / 2,
+    0.05
+  );
 
-  const multioutput = amountscore * streakscore;
+  const multioutput = goalscore * streakscore * amountscore;
 
   const getOutputText = () => {
     return (
       <p className="mb-0">
-        Sleep target deviation ({amountscore}x) * streak ({streakscore}x)
+        Sleep amount ({amountscore}x) * Sleep target deviation ({goalscore}x) *
+        streak ({streakscore}x)
         <br /> = <b>{multioutput}x total multiplier</b>
       </p>
     );
@@ -115,7 +120,7 @@ const SleepMod = ({ toModMenu, maincolor }) => {
                     className={
                       "bi bi-exclamation-circle fs-3 translate-middle top-50 position-absolute"
                     }
-                    style={{ right: "3%" }}
+                    style={{ right: "-8px" }}
                   />
                 )}
               </div>
@@ -220,7 +225,6 @@ const SleepMod = ({ toModMenu, maincolor }) => {
             onClick={() => {
               setUsedSleepTime(excpectedsleep * 3600);
               setSleepLock(true);
-              toModMenu();
             }}
           >
             Go to sleep!
@@ -232,7 +236,7 @@ const SleepMod = ({ toModMenu, maincolor }) => {
 };
 
 const updateTargetSleep = (hours, goal, changeGoal) => {
-  let finalhours = Math.min(Math.max(goal + hours, 0), 12);
+  let finalhours = clamp(Math.max(goal + hours, 0), 4, 12);
   changeGoal(finalhours);
 };
 

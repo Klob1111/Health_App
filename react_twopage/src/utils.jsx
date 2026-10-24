@@ -12,6 +12,7 @@ const getScore = (modules) => {
     }
   });
 
+  if (val < 0) return "???";
   return Math.round(val);
 };
 
