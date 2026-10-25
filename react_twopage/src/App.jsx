@@ -29,7 +29,7 @@ function App() {
     }
 
     return {
-      Sleep: 15,
+      Sleep: 1,
       // Food: 12,
       // Exercise: 3,
     };

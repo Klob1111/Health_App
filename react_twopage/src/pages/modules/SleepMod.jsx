@@ -30,28 +30,25 @@ const SleepMod = ({ toModMenu, maincolor }) => {
     return og !== null ? Number(og) : 27;
   });
 
-  const excpectedsleep = sleepend / 4 + 12 - sleepstart / 4;
-  const badsleep = excpectedsleep < sleepgoal;
+  const expectedsleep = sleepend / 4 + 12 - sleepstart / 4;
+  const badsleep = expectedsleep < sleepgoal || expectedsleep > sleepgoal + 0.5;
 
-  //output = 1.25x, decresing for every 15 mins away from the goal (goal to 30 mins after) it is + a bonus depending on how good the sleep is + the 0.1x times the number of days it's been consisant, + a bonus depending on how long it's been since a shedule change, capping at 2 weeks + challenge bonus (how leniant it is with when you go sleep)
+  //output = 1.25x, decresing for every 15 mins away from the goal (goal to 30 mins after) it is + average of shedule and sleep time clossness over the last two weeks + a bonus depending on how good the sleep length is + the 0.1x times the number of days it's been consisant, + a bonus depending on how long it's been since a shedule change, capping at 2 weeks + challenge bonus (how leniant it is with when you go sleep)
   const goalscore = clamp(
     1.5 -
-      Math.max(
-        sleepgoal - excpectedsleep,
-        0,
-        excpectedsleep - sleepgoal - 0.5
-      ) /
+      Math.max(sleepgoal - expectedsleep, 0, expectedsleep - sleepgoal - 0.5) /
         2,
     0.25,
     1.5
   );
   const streakscore = streaks.Sleep;
   const amountscore = Math.max(
-    1.5 - Math.max(8 - excpectedsleep, 0, excpectedsleep - 10) / 2,
+    1.5 - Math.max(8 - expectedsleep, 0, expectedsleep - 10) / 2,
     0.05
   );
 
-  const multioutput = goalscore * streakscore * amountscore;
+  const multioutput =
+    Math.round(goalscore * streakscore * amountscore * 100) / 100;
 
   const getOutputText = () => {
     return (
@@ -73,7 +70,7 @@ const SleepMod = ({ toModMenu, maincolor }) => {
 
   //prevent schedule from going over 12 hours
   useEffect(() => {
-    if (excpectedsleep > 12) {
+    if (expectedsleep > 12) {
       setSleepEnd((s) => s - 1);
     }
 
@@ -81,7 +78,7 @@ const SleepMod = ({ toModMenu, maincolor }) => {
   }, [sleepstart]);
 
   useEffect(() => {
-    if (excpectedsleep > 12) {
+    if (expectedsleep > 12) {
       setSleepStart((s) => s + 1);
     }
 
@@ -160,10 +157,10 @@ const SleepMod = ({ toModMenu, maincolor }) => {
                   color: badsleep ? "red" : "",
                 }}
               >
-                {formatSleephrs(excpectedsleep)}
+                {formatSleephrs(expectedsleep)}
                 {badsleep && (
                   <p className="fs-5 position-absolute p-3 start-50 translate-middle">
-                    below target
+                    off target
                   </p>
                 )}
               </div>
@@ -223,7 +220,7 @@ const SleepMod = ({ toModMenu, maincolor }) => {
           <button
             className="btn fs-1 mx-3 bg-dark-subtle"
             onClick={() => {
-              setUsedSleepTime(excpectedsleep * 3600);
+              setUsedSleepTime(expectedsleep * 3600);
               setSleepLock(true);
             }}
           >

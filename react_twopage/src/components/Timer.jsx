@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../App";
 
-const Timer = ({ initial, onEnd }) => {
+const Timer = ({ initial, onEnd, storagekey }) => {
   //inital time is in seconds
   const [endtime, setEndTime] = useState(() => {
-    const end = localStorage.getItem("endTime");
+    const end = localStorage.getItem("endTime" + storagekey);
     return end !== null ? Math.max(0, Number(end)) : 0;
   });
   //init to infinity so it doesn't end instantly
@@ -36,7 +36,7 @@ const Timer = ({ initial, onEnd }) => {
       end = Date.now() + initial * 1000;
       setEndTime(end);
 
-      localStorage.setItem("endTime", end);
+      localStorage.setItem("endTime" + storagekey, end);
     }
 
     const getTimeLeft = () => {
@@ -48,6 +48,7 @@ const Timer = ({ initial, onEnd }) => {
 
     return () => {
       clearInterval(interval);
+      localStorage.removeItem("endTime" + storagekey);
     };
   }, []);
 
